@@ -1,0 +1,110 @@
+<!-- Замените текущий блок вопроса на этот -->
+
+<style>
+.question-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.question-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.question-popup {
+    background: linear-gradient(135deg, #2a1a4a 0%, #1a0f2e 100%);
+    border: 2px solid #4a3a6a;
+    border-radius: 16px;
+    padding: 28px 32px;
+    min-width: 320px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(100,80,180,0.2);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.question-overlay.active .question-popup {
+    transform: scale(1) translateY(0);
+}
+
+.question-title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.answer-option {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #e0d0f0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.answer-option:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateX(4px);
+}
+
+.answer-option.selected {
+    background: rgba(100, 80, 200, 0.3);
+    border-color: #8a6de0;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 16px;
+    background: linear-gradient(135deg, #6a5acd 0%, #483d8b 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(106, 90, 205, 0.4);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+</style>
+
+<div class="question-overlay" id="questionOverlay">
+    <div class="question-popup">
+        <div class="question-title" id="questionText">Вопрос</div>
+        <div id="answersContainer"></div>
+        <button class="submit-btn" id="submitAnswer" onclick="submitAnswer()">Ответить</button>
+    </div>
+</div>
