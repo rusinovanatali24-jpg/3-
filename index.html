@@ -157,6 +157,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 <div class="app">
@@ -799,15 +800,17 @@ function render(){
 /* ===================== ДВИЖОК ИГРЫ (встраивается в экспортируемый файл) ===================== */
 const GAME_CSS = `
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-.g-wrap{position:relative;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background-size:cover;background-position:center;background-attachment:fixed;padding:10px;box-sizing:border-box;overflow:auto;}
-.g-hud{width:100%;max-width:480px;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px auto;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.6);flex-shrink:0;}
+#game-root{width:100%;height:100%;}
+html,body{margin:0!important;padding:0!important;width:100%!important;height:100%!important;overflow:hidden!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.g-bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
+.g-wrap{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;box-sizing:border-box;overflow:hidden;z-index:1;}
+.g-hud{width:100%;max-width:480px;display:flex;align-items:center;justify-content:center;gap:10px;margin:6px auto 0;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.6);flex-shrink:0;padding:0 10px;box-sizing:border-box;}
 .g-target-icon{width:30px;height:30px;flex-shrink:0;}
 .g-progress-outer{flex:1;max-width:220px;height:16px;background:rgba(0,0,0,.4);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.3);}
 .g-progress-inner{height:100%;background:linear-gradient(90deg,#F2C94C,#E8B75B);transition:width .4s ease;}
 .g-progress-text{font-size:13px;white-space:nowrap;}
-.g-board-holder{position:relative;margin:auto;flex-shrink:0;}
-.g-board{display:grid;gap:4px;background:rgba(0,0,0,.28);padding:8px;border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.45);grid-template-columns:repeat(var(--cols, 8), var(--cell, 72px));grid-auto-rows:var(--cell, 72px);width:fit-content;height:fit-content;}
+.g-board-holder{position:relative;margin:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.g-board{display:grid;gap:4px;background:rgba(0,0,0,.28);padding:8px;border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.45);grid-template-columns:repeat(var(--cols, 8), var(--cell, 72px));grid-auto-rows:var(--cell, 72px);width:fit-content;height:fit-content;max-width:100%;max-height:100%;}
 .g-cell{border-radius:8px;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;transition:transform .12s;width:var(--cell, 72px);height:var(--cell, 72px);}
 .g-cell.selected{outline:3px solid #fff;outline-offset:-3px;}
 .g-cell:active{transform:scale(.93);}
@@ -823,7 +826,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:
 .gem3d .g3-spark.s1{width:9px;height:9px;top:-4%;left:-8%;}
 .gem3d .g3-spark.s2{width:7px;height:7px;top:6%;right:-10%;}
 .gem3d .g3-spark.s3{width:6px;height:6px;bottom:2%;left:-10%;}
-.g-fx{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+.g-fx{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;}
 .g-modal-overlay{position:fixed;inset:0;background:rgba(10,6,20,.72);display:flex;align-items:flex-start;justify-content:center;z-index:50;padding:16px;padding-top:40px;overflow-y:auto;}
 .g-modal{background:#211732;border:1px solid #3a2e52;border-radius:16px;padding:20px;max-width:var(--modal-max-width,420px);width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;color:#F3EEE3;box-shadow:0 20px 60px rgba(0,0,0,.5);scrollbar-width:thin;scrollbar-color:var(--modal-accent,#E8B75B) rgba(255,255,255,.08);}
 .g-modal::-webkit-scrollbar{width:8px;}
@@ -852,7 +855,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:
 .g-win button{margin-top:16px;padding:12px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,#E8B75B,#F2994A);color:#20140A;font-weight:700;font-size:15px;cursor:pointer;}
 .g-toast{position:absolute;top:8px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,12,32,.92);color:#F3EEE3;border:1px solid #E8B75B;border-radius:10px;padding:9px 16px;font-size:13px;white-space:nowrap;opacity:0;transition:.3s;z-index:40;box-shadow:0 8px 20px rgba(0,0,0,.4);}
 .g-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.g-board-wrap{position:relative;display:inline-block;flex-shrink:0;}
+.g-board-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-height:0;}
 `;
 
 const GAME_ENGINE_JS = `
@@ -875,7 +878,8 @@ const GAME_ENGINE_JS = `
     : 'url(\\'' + CONFIG.background.src + '\\') center/cover';
 
   root.innerHTML =
-    '<div class="g-wrap" style="background:'+bgCss+'">' +
+    '<div class="g-bg-layer" style="background:'+bgCss+'"></div>' +
+    '<div class="g-wrap">' +
       '<div class="g-hud"><div class="g-target-icon" id="gTargetIcon"></div>' +
       '<div class="g-progress-outer"><div class="g-progress-inner" id="gProgFill" style="width:0%"></div></div>' +
       '<div class="g-progress-text" id="gProgText"></div></div>' +
@@ -905,10 +909,11 @@ const GAME_ENGINE_JS = `
     boardEl.style.height = totalH + 'px';
     var hud = document.querySelector('.g-hud');
     if(hud) hud.style.maxWidth = totalW + 'px';
-    fx.width = totalW + 16;
-    fx.height = totalH + 16;
-    fx.style.left = '-8px';
-    fx.style.top = '-8px';
+    // Canvas точно размером с доску, позиционирован относительно boardEl
+    fx.width = totalW;
+    fx.height = totalH;
+    fx.style.left = '0px';
+    fx.style.top = '0px';
   }
 
   /* -------- resize handle отключён — размер управляется через CONFIG.grid.cellSize -------- */
