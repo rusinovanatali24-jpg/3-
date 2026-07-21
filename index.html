@@ -140,7 +140,7 @@
   .latex-field-preview{background:var(--bg-deep);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;margin-top:6px;font-size:13px;color:var(--text);min-height:20px;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
   .preview-wrap{background:var(--bg-panel);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px;}
-  .preview-wrap iframe{width:100%;max-width:520px;aspect-ratio:9/13;border:1px solid var(--line);border-radius:14px;background:#000;}
+  .preview-wrap iframe{width:100%;max-width:520px;height:600px;border:1px solid var(--line);border-radius:14px;background:#000;}
   .export-code{background:var(--bg-deep);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);max-height:160px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
   .stat-row{display:flex;gap:10px;flex-wrap:wrap;}
   .stat{background:var(--bg-panel-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--muted);}
@@ -749,7 +749,7 @@ function renderPreviewPanel(){
 function renderExportPanel(){
   const html = buildStandaloneHTML(state);
   const sizeKb = Math.round(new Blob([html]).size/1024);
-  const fullIframe = '<iframe srcdoc="'+escSrcdoc(html)+'" width="100%" style="border:none;border-radius:10px;aspect-ratio:16/9;" allowfullscreen></iframe>';
+  const fullIframe = '<iframe srcdoc="'+escSrcdoc(html)+'" width="100%" height="100%" style="border:none;border-radius:10px;" allowfullscreen></iframe>';
   return ''+
   '<div class="panel-head"><h2>Экспорт готовой игры</h2><p>Скопируйте готовый код iframe и вставьте его в Genially — так же, как в «Карта сокровищ». Хостинг файла отдельно не требуется.</p></div>'+
   '<div class="card"><div class="stat-row">'+
@@ -793,13 +793,13 @@ function render(){
 const GAME_CSS = `
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-.g-wrap{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;padding:10px;}
-.g-hud{width:100%;max-width:480px;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.6);}
+.g-wrap{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background-size:cover;background-position:center;background-attachment:fixed;padding:10px;box-sizing:border-box;overflow:auto;}
+.g-hud{width:100%;max-width:480px;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px auto;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.6);flex-shrink:0;}
 .g-target-icon{width:30px;height:30px;flex-shrink:0;}
 .g-progress-outer{flex:1;max-width:220px;height:16px;background:rgba(0,0,0,.4);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.3);}
 .g-progress-inner{height:100%;background:linear-gradient(90deg,#F2C94C,#E8B75B);transition:width .4s ease;}
 .g-progress-text{font-size:13px;white-space:nowrap;}
-.g-board-holder{position:relative;}
+.g-board-holder{position:relative;margin:auto;flex-shrink:0;}
 .g-board{display:grid;gap:4px;background:rgba(0,0,0,.28);padding:8px;border-radius:14px;box-shadow:0 12px 34px rgba(0,0,0,.45);}
 .g-cell{border-radius:8px;cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;transition:transform .12s;}
 .g-cell.selected{outline:3px solid #fff;outline-offset:-3px;}
@@ -848,7 +848,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:
 .g-resize-handle{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;cursor:nwse-resize;z-index:10;opacity:.7;transition:opacity .2s;}
 .g-resize-handle:hover{opacity:1;}
 .g-resize-handle::after{content:'';position:absolute;right:4px;bottom:4px;width:10px;height:10px;border-right:3px solid rgba(255,255,255,.55);border-bottom:3px solid rgba(255,255,255,.55);border-radius:0 0 3px 0;}
-.g-board-wrap{position:relative;display:inline-block;}
+.g-board-wrap{position:relative;display:inline-block;flex-shrink:0;}
 `;
 
 const GAME_ENGINE_JS = `
@@ -893,8 +893,9 @@ const GAME_ENGINE_JS = `
   function sizeBoard(){
     var hud = document.querySelector('.g-hud');
     var hudH = hud ? hud.offsetHeight + 8 : 0;
-    var availW = document.documentElement.clientWidth - 20;
-    var availH = document.documentElement.clientHeight - hudH - 20;
+    // Доступное пространство — вся высота и ширина окна
+    var availW = window.innerWidth - 20;
+    var availH = window.innerHeight - hudH - 20;
     var cellW = Math.floor(availW / COLS);
     var cellH = Math.floor(availH / ROWS);
     var cell = Math.max(24, Math.min(cellW, cellH, currentCellSize || 72));
@@ -906,7 +907,7 @@ const GAME_ENGINE_JS = `
     fx.style.left='-8px'; fx.style.top='-8px';
   }
 
-  /* -------- resize handle для игрового поля -------- */
+  /* -------- resize handle для размера кристаллов -------- */
   var boardWrap = document.getElementById('gBoardWrap');
   var resizeHandle = document.getElementById('gResizeHandle');
   var isResizing = false;
@@ -926,10 +927,16 @@ const GAME_ENGINE_JS = `
       var dx = e.clientX - startX;
       var dy = e.clientY - startY;
       var delta = Math.max(dx, dy);
-      var newSize = Math.max(48, Math.min(120, startSize + Math.round(delta / 4) * 4));
+      var newSize = Math.max(36, Math.min(140, startSize + Math.round(delta / 3) * 3));
       if(newSize !== currentCellSize){
         currentCellSize = newSize;
-        sizeBoard();
+        // Только пересчитываем размер ячеек, фон не трогаем
+        var cell = currentCellSize;
+        boardEl.style.width = (cell*COLS)+'px';
+        boardEl.style.height = (cell*ROWS)+'px';
+        var hud = document.querySelector('.g-hud');
+        if(hud) hud.style.maxWidth = (cell*COLS)+'px';
+        fx.width = boardEl.offsetWidth + 16; fx.height = boardEl.offsetHeight + 16;
         drawBoard();
       }
     });
@@ -1527,7 +1534,7 @@ document.getElementById('panelRoot').addEventListener('click', function(e){
   }
   else if(act==='copy-iframe'){
     const html = buildStandaloneHTML(state);
-    const code = '<iframe srcdoc="'+escSrcdoc(html)+'" width="100%" style="border:none;border-radius:10px;aspect-ratio:16/9;" allowfullscreen></iframe>';
+    const code = '<iframe srcdoc="'+escSrcdoc(html)+'" width="100%" height="100%" style="border:none;border-radius:10px;" allowfullscreen></iframe>';
     robustCopy(code, function(){ showToast('Код iframe скопирован'); }, function(){ showToast('Не удалось скопировать автоматически — выделите код ниже вручную (Ctrl+A, Ctrl+C)'); });
   }
 });
