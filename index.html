@@ -845,9 +845,11 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:
 .g-win button{margin-top:16px;padding:12px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,#E8B75B,#F2994A);color:#20140A;font-weight:700;font-size:15px;cursor:pointer;}
 .g-toast{position:absolute;top:8px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,12,32,.92);color:#F3EEE3;border:1px solid #E8B75B;border-radius:10px;padding:9px 16px;font-size:13px;white-space:nowrap;opacity:0;transition:.3s;z-index:40;box-shadow:0 8px 20px rgba(0,0,0,.4);}
 .g-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.g-resize-handle{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;cursor:nwse-resize;z-index:10;opacity:.7;transition:opacity .2s;}
-.g-resize-handle:hover{opacity:1;}
-.g-resize-handle::after{content:'';position:absolute;right:4px;bottom:4px;width:10px;height:10px;border-right:3px solid rgba(255,255,255,.55);border-bottom:3px solid rgba(255,255,255,.55);border-radius:0 0 3px 0;}
+.g-resize-handle{position:absolute;right:-8px;bottom:-8px;width:28px;height:28px;cursor:nwse-resize;z-index:10;opacity:.85;transition:opacity .2s;background:rgba(232,183,91,.25);border-radius:50%;border:2px solid rgba(232,183,91,.6);}
+.g-resize-handle:hover{opacity:1;background:rgba(232,183,91,.4);transform:scale(1.15);}
+.g-resize-handle::after{content:'';position:absolute;right:6px;bottom:6px;width:10px;height:10px;border-right:3px solid #E8B75B;border-bottom:3px solid #E8B75B;border-radius:0 0 3px 0;}
+.g-resize-label{position:absolute;right:24px;bottom:4px;background:rgba(20,12,32,.9);color:#E8B75B;padding:2px 8px;border-radius:6px;font-size:11px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;}
+.g-resize-handle:hover .g-resize-label{opacity:1;}
 .g-board-wrap{position:relative;display:inline-block;flex-shrink:0;}
 `;
 
@@ -875,7 +877,7 @@ const GAME_ENGINE_JS = `
       '<div class="g-hud"><div class="g-target-icon" id="gTargetIcon"></div>' +
       '<div class="g-progress-outer"><div class="g-progress-inner" id="gProgFill" style="width:0%"></div></div>' +
       '<div class="g-progress-text" id="gProgText"></div></div>' +
-      '<div class="g-board-wrap" id="gBoardWrap"><div class="g-board-holder"><div class="g-board" id="gBoard"></div><canvas class="g-fx" id="gFx"></canvas></div><div class="g-resize-handle" id="gResizeHandle" title="Потяните, чтобы изменить размер поля"></div></div>' +
+      '<div class="g-board-wrap" id="gBoardWrap"><div class="g-board-holder"><div class="g-board" id="gBoard"></div><canvas class="g-fx" id="gFx"></canvas></div><div class="g-resize-handle" id="gResizeHandle" title="Потяните, чтобы изменить размер кристаллов"><span class="g-resize-label">Тяните ↘</span></div></div>' +
     '</div>' +
     '<div class="g-modal-overlay" id="gModal" style="display:none"></div>';
 
@@ -893,12 +895,14 @@ const GAME_ENGINE_JS = `
   function sizeBoard(){
     var hud = document.querySelector('.g-hud');
     var hudH = hud ? hud.offsetHeight + 8 : 0;
-    // Доступное пространство — вся высота и ширина окна
     var availW = window.innerWidth - 20;
     var availH = window.innerHeight - hudH - 20;
     var cellW = Math.floor(availW / COLS);
     var cellH = Math.floor(availH / ROWS);
-    var cell = Math.max(24, Math.min(cellW, cellH, currentCellSize || 72));
+    // При первом запуске currentCellSize ещё не установлен — подгоняем под экран
+    // После ручного изменения currentCellSize сохраняется
+    var cell = currentCellSize || Math.max(24, Math.min(cellW, cellH, 72));
+    if(!currentCellSize) currentCellSize = cell;
     boardEl.style.width = (cell*COLS)+'px';
     boardEl.style.height = (cell*ROWS)+'px';
     if(hud) hud.style.maxWidth = (cell*COLS)+'px';
@@ -926,11 +930,12 @@ const GAME_ENGINE_JS = `
       if(!isResizing) return;
       var dx = e.clientX - startX;
       var dy = e.clientY - startY;
-      var delta = Math.max(dx, dy);
-      var newSize = Math.max(36, Math.min(140, startSize + Math.round(delta / 3) * 3));
+      // Диагональное движение: вправо-вниз = увеличить, влево-вверх = уменьшить
+      var delta = (dx + dy) / 2;
+      var newSize = Math.max(30, Math.min(160, startSize + Math.round(delta / 2)));
       if(newSize !== currentCellSize){
         currentCellSize = newSize;
-        // Только пересчитываем размер ячеек, фон не трогаем
+        // Пересчитываем только размер сетки, фон не трогаем
         var cell = currentCellSize;
         boardEl.style.width = (cell*COLS)+'px';
         boardEl.style.height = (cell*ROWS)+'px';
@@ -1457,7 +1462,7 @@ const GAME_ENGINE_JS = `
   initBoard();
   drawBoard();
   updateProgress();
-  window.addEventListener('resize', sizeBoard);
+  // window.addEventListener('resize', sizeBoard); // Отключено: resize handle управляет размером вручную
 })();
 `;
 
