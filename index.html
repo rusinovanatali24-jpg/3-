@@ -743,7 +743,7 @@ function renderPreviewPanel(){
   return ''+
   '<div class="panel-head"><h2>Предпросмотр</h2><p>Играйте прямо здесь — так игру увидит ребёнок.</p></div>'+
   '<div class="card"><label class="f">Размер кристаллов: <b id="gemSizeLabel">'+(state.grid.cellSize||72)+'px</b></label>'+
-  '<input type="range" min="40" max="120" step="4" value="'+(state.grid.cellSize||72)+'" data-action="set-gem-size" style="width:100%;margin-bottom:12px;">'+
+  '<input type="range" min="36" max="160" step="4" value="'+(state.grid.cellSize||72)+'" data-action="set-gem-size" style="width:100%;margin-bottom:12px;">'+
   '<div class="hint">Потяните слайдер, чтобы увеличить или уменьшить кристаллы. Фон останется неизменным.</div></div>'+
   '<div class="preview-wrap">'+
     '<iframe id="previewFrame" srcdoc="'+escAttr(buildStandaloneHTML(state))+'"></iframe>'+
@@ -799,7 +799,7 @@ function render(){
 const GAME_CSS = `
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-.g-wrap{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background-size:cover;background-position:center;background-attachment:fixed;padding:10px;box-sizing:border-box;overflow:auto;}
+.g-wrap{position:relative;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background-size:cover;background-position:center;background-attachment:fixed;padding:10px;box-sizing:border-box;overflow:auto;}
 .g-hud{width:100%;max-width:480px;display:flex;align-items:center;justify-content:center;gap:10px;margin:8px auto;color:#fff;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,.6);flex-shrink:0;}
 .g-target-icon{width:30px;height:30px;flex-shrink:0;}
 .g-progress-outer{flex:1;max-width:220px;height:16px;background:rgba(0,0,0,.4);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.3);}
@@ -851,11 +851,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:
 .g-win button{margin-top:16px;padding:12px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,#E8B75B,#F2994A);color:#20140A;font-weight:700;font-size:15px;cursor:pointer;}
 .g-toast{position:absolute;top:8px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,12,32,.92);color:#F3EEE3;border:1px solid #E8B75B;border-radius:10px;padding:9px 16px;font-size:13px;white-space:nowrap;opacity:0;transition:.3s;z-index:40;box-shadow:0 8px 20px rgba(0,0,0,.4);}
 .g-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.g-resize-handle{position:absolute;right:-8px;bottom:-8px;width:32px;height:32px;cursor:nwse-resize;z-index:100;opacity:1;transition:opacity .2s,transform .2s;background:rgba(232,183,91,.35);border-radius:50%;border:2px solid #E8B75B;box-shadow:0 2px 8px rgba(0,0,0,.4);}
-.g-resize-handle:hover{opacity:1;background:rgba(232,183,91,.55);transform:scale(1.2);}
-.g-resize-handle::after{content:'';position:absolute;right:7px;bottom:7px;width:12px;height:12px;border-right:3px solid #E8B75B;border-bottom:3px solid #E8B75B;border-radius:0 0 3px 0;}
-.g-resize-label{position:absolute;right:30px;bottom:6px;background:rgba(20,12,32,.95);color:#E8B75B;padding:3px 10px;border-radius:6px;font-size:12px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;border:1px solid rgba(232,183,91,.3);}
-.g-resize-handle:hover .g-resize-label{opacity:1;}
+/* resize handle удалён — используйте слайдер в редакторе */
 .g-board-wrap{position:relative;display:inline-block;flex-shrink:0;}
 `;
 
@@ -883,7 +879,7 @@ const GAME_ENGINE_JS = `
       '<div class="g-hud"><div class="g-target-icon" id="gTargetIcon"></div>' +
       '<div class="g-progress-outer"><div class="g-progress-inner" id="gProgFill" style="width:0%"></div></div>' +
       '<div class="g-progress-text" id="gProgText"></div></div>' +
-      '<div class="g-board-wrap" id="gBoardWrap"><div class="g-board-holder"><div class="g-board" id="gBoard"></div><canvas class="g-fx" id="gFx"></canvas></div><div class="g-resize-handle" id="gResizeHandle" title="Потяните, чтобы изменить размер кристаллов"><span class="g-resize-label">Тяните ↘</span></div></div>' +
+      '<div class="g-board-wrap" id="gBoardWrap"><div class="g-board-holder"><div class="g-board" id="gBoard"></div><canvas class="g-fx" id="gFx"></canvas></div></div>' +
     '</div>' +
     '<div class="g-modal-overlay" id="gModal" style="display:none"></div>';
 
@@ -899,62 +895,18 @@ const GAME_ENGINE_JS = `
   var currentCellSize = CONFIG.grid.cellSize || 72;
 
   function sizeBoard(){
-    var hud = document.querySelector('.g-hud');
-    var hudH = hud ? hud.offsetHeight + 8 : 0;
-    var availW = window.innerWidth - 20;
-    var availH = window.innerHeight - hudH - 20;
-    var cellW = Math.floor(availW / COLS);
-    var cellH = Math.floor(availH / ROWS);
-    // Используем заданный размер, но не больше доступного пространства
-    var cell = Math.min(currentCellSize || 72, cellW, cellH);
-    cell = Math.max(24, cell);
+    // Просто применяем заданный размер ячейки, без подгонки под экран
+    var cell = currentCellSize || 72;
     boardEl.style.width = (cell*COLS)+'px';
     boardEl.style.height = (cell*ROWS)+'px';
+    var hud = document.querySelector('.g-hud');
     if(hud) hud.style.maxWidth = (cell*COLS)+'px';
     document.documentElement.style.setProperty('--cell', cell+'px');
     fx.width = boardEl.offsetWidth + 16; fx.height = boardEl.offsetHeight + 16;
     fx.style.left='-8px'; fx.style.top='-8px';
   }
 
-  /* -------- resize handle для размера кристаллов -------- */
-  var boardWrap = document.getElementById('gBoardWrap');
-  var resizeHandle = document.getElementById('gResizeHandle');
-  var isResizing = false;
-  var startX, startY, startSize;
-
-  if(resizeHandle){
-    resizeHandle.addEventListener('pointerdown', function(e){
-      isResizing = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      startSize = currentCellSize;
-      resizeHandle.setPointerCapture(e.pointerId);
-      e.preventDefault();
-    });
-    resizeHandle.addEventListener('pointermove', function(e){
-      if(!isResizing) return;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
-      // Диагональное движение: вправо-вниз = увеличить, влево-вверх = уменьшить
-      var delta = (dx + dy) / 2;
-      var newSize = Math.max(30, Math.min(160, startSize + Math.round(delta / 2)));
-      if(newSize !== currentCellSize){
-        currentCellSize = newSize;
-        // Пересчитываем только размер сетки, фон не трогаем
-        var cell = currentCellSize;
-        boardEl.style.width = (cell*COLS)+'px';
-        boardEl.style.height = (cell*ROWS)+'px';
-        var hud = document.querySelector('.g-hud');
-        if(hud) hud.style.maxWidth = (cell*COLS)+'px';
-        fx.width = boardEl.offsetWidth + 16; fx.height = boardEl.offsetHeight + 16;
-        drawBoard();
-      }
-    });
-    resizeHandle.addEventListener('pointerup', function(e){
-      isResizing = false;
-      if(resizeHandle.releasePointerCapture) resizeHandle.releasePointerCapture(e.pointerId);
-    });
-  }
+  /* -------- resize handle отключён — размер управляется через CONFIG.grid.cellSize -------- */
   function hexToRgb(hex){ hex=String(hex||'#888888').replace('#',''); if(hex.length===3) hex=hex.split('').map(function(c){return c+c;}).join(''); var num=parseInt(hex,16)||0x888888; return {r:(num>>16)&255,g:(num>>8)&255,b:num&255}; }
   function rgbToHex(r,g,b){ function h(v){ v=Math.max(0,Math.min(255,Math.round(v))); var s=v.toString(16); return s.length<2?'0'+s:s; } return '#'+h(r)+h(g)+h(b); }
   function shade(hex, percent){ var c=hexToRgb(hex); var t=percent<0?0:255; var p=Math.abs(percent)/100; return rgbToHex(c.r+(t-c.r)*p, c.g+(t-c.g)*p, c.b+(t-c.b)*p); }
@@ -1467,6 +1419,7 @@ const GAME_ENGINE_JS = `
   initBoard();
   drawBoard();
   updateProgress();
+  // Не вызываем sizeBoard на resize — размер кристаллов фиксирован
   // window.addEventListener('resize', sizeBoard); // Отключено: resize handle управляет размером вручную
 })();
 `;
