@@ -579,43 +579,6 @@ function renderBgPanel(){
   }).join('');
 
   return ''+
-  '<div class="panel-head"><h2>Визуал</h2><p>Фон игры и оформление всплывающего окна с вопросом.</p></div>'+
-  '<div class="card"><h3>Пейзаж</h3><div class="bg-grid">'+tiles+'</div>'+
-  (state.background.type==='custom' ? '<div class="hint">Изображение сжимается автоматически, чтобы файл игры оставался лёгким.</div>' : '')+
-  '</div>'+
-  '<div class="card"><h3>Предпросмотр фона</h3><div class="swatch" style="height:160px;'+bgPreviewStyle()+'"></div></div>'+
-  '<div class="card"><h3>Всплывающее окно вопроса</h3>'+
-  '<label class="f">Стиль оформления</label><div class="row" style="gap:8px;margin:6px 0 16px;">'+styleButtons+'</div>'+
-  '<div class="row" style="gap:16px;align-items:flex-end;margin-bottom:16px;">'+
-    '<div class="col"><label class="f">Акцентный цвет (рамка + кнопка ответа)</label><input type="color" data-action="set-modal-color" value="'+escAttr(m.color)+'" style="width:56px;height:36px;padding:2px;"></div>'+
-    '<div class="col" style="flex:1;min-width:180px;"><label class="f">Шрифт</label><select data-action="set-modal-font">'+fontOptions+'</select></div>'+
-  '</div>'+
-  '<div class="col" style="margin-bottom:16px;"><label class="f">Размер шрифта вопроса: <b id="modalFontSizeLabel">'+m.fontSize+'px</b></label>'+
-  '<input type="range" min="13" max="28" value="'+m.fontSize+'" data-action="set-modal-fontsize" style="width:100%;"></div>'+
-  '<div class="col" style="margin-bottom:16px;"><label class="f">Ширина окна вопроса: <b id="modalMaxWidthLabel">'+(m.maxWidth||420)+'px</b></label>'+
-  '<input type="range" min="280" max="600" step="10" value="'+(m.maxWidth||420)+'" data-action="set-modal-maxwidth" style="width:100%;"></div>'+
-  '<label class="f">Фоновая подложка окна (необязательно)</label>'+
-  '<div class="row" style="gap:10px;align-items:center;margin:6px 0 16px;">'+
-    '<div class="swatch" style="width:96px;height:64px;flex-shrink:0;'+(m.bgImage?('background-image:url(\''+m.bgImage+'\');background-size:cover;background-position:center;'):'background:var(--bg-deep);')+'"></div>'+
-    '<button class="small" data-action="modal-bg-upload">Своё изображение</button>'+
-    (m.bgImage?'<button class="small ghost" data-action="modal-bg-reset">Сброс</button>':'')+
-  '</div>'+
-  '<label class="f">Живой пример</label>'+
-  '<div id="modalPreviewBox" style="background:#150F23;border-radius:12px;padding:20px;display:flex;justify-content:center;">'+modalPreviewHTML()+'</div>'+
-  '</div>';
-}
-  const customSel = state.background.type==='custom' ? ' selected' : '';
-  tiles += '<div class="bg-opt'+customSel+'" data-action="pick-bg-custom" style="'+(state.background.type==='custom'&&state.background.src?('background-image:url(\''+state.background.src+'\');background-size:cover;background-position:center;'):'display:flex;align-items:center;justify-content:center;border-style:dashed;')+'">'+(state.background.type==='custom'&&state.background.src?'':'<span style="position:static;background:none;">+ своё изображение</span>')+(state.background.type==='custom'&&state.background.src?'<span>Своё изображение</span>':'')+'</div>';
-
-  const m = state.modal;
-  const styleButtons = MODAL_STYLES.map(function(s){
-    return '<button class="'+(m.style===s.id?'primary':'')+'" data-action="set-modal-style" data-style="'+s.id+'">'+s.name+'</button>';
-  }).join('');
-  const fontOptions = FONT_OPTIONS.map(function(f){
-    return '<option value="'+f.id+'" '+(m.font===f.id?'selected':'')+'>'+f.name+'</option>';
-  }).join('');
-
-  return ''+
   '<div class="panel-head">  const langOptions = Object.keys(LANGUAGES).map(function(k){
     return '<option value="'+k+'" '+(k===state.lang?'selected':'')+'>'+LANGUAGES[k].name+'</option>';
   }).join('');
