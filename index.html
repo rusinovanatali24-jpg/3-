@@ -449,20 +449,20 @@ const MODAL_STYLES = [
 ];
   
   const LANGUAGES = {
-  ru: { name:'Русский 🇷🇺', correct:'Верно!', wrong:'Неверно, попробуем собрать ещё кристаллов', submit:'Ответить', ok:'Понятно', win:'Сокровища найдены!', collected:'Собрано', outOf:'из', playAgain:'Играть заново' },
-  en: { name:'English 🇬🇧', correct:'Correct!', wrong:'Wrong, let\'s collect more crystals', submit:'Answer', ok:'Got it', win:'Treasure found!', collected:'Collected', outOf:'of', playAgain:'Play again' },
-  fr: { name:'Français 🇫🇷', correct:'Correct !', wrong:'Incorrect, collectons plus de cristaux', submit:'Répondre', ok:'Compris', win:'Trésor trouvé !', collected:'Collecté', outOf:'sur', playAgain:'Rejouer' },
-  es: { name:'Español 🇪🇸', correct:'¡Correcto!', wrong:'Incorrecto, juntemos más cristales', submit:'Responder', ok:'Entendido', win:'¡Tesoro encontrado!', collected:'Recopilado', outOf:'de', playAgain:'Jugar de nuevo' },
-  it: { name:'Italiano 🇮🇹', correct:'Corretto!', wrong:'Sbagliato, raccogliamo altri cristalli', submit:'Rispondere', ok:'Capito', win:'Tesoro trovato!', collected:'Raccolto', outOf:'di', playAgain:'Gioca ancora' },
-  de: { name:'Deutsch 🇩🇪', correct:'Richtig!', wrong:'Falsch, lass uns mehr Kristalle sammeln', submit:'Antworten', ok:'Verstanden', win:'Schatz gefunden!', collected:'Gesammelt', outOf:'von', playAgain:'Nochmal spielen' },
-  pt: { name:'Português 🇵🇹', correct:'Correto!', wrong:'Errado, vamos colecionar mais cristais', submit:'Responder', ok:'Entendido', win:'Tesouro encontrado!', collected:'Coletado', outOf:'de', playAgain:'Jogar novamente' },
-  pl: { name:'Polski 🇵🇱', correct:'Poprawnie!', wrong:'Błędnie, zbieramy więcej kryształów', submit:'Odpowiedź', ok:'Rozumiem', win:'Skarb znaleziony!', collected:'Zebrano', outOf:'z', playAgain:'Zagraj ponownie' },
-  zh: { name:'中文 🇨🇳', correct:'正确！', wrong:'错误，让我们再收集更多水晶', submit:'回答', ok:'明白了', win:'找到宝藏！', collected:'已收集', outOf:'/', playAgain:'再玩一次' },
-  ja: { name:'日本語 🇯🇵', correct:'正解！', wrong:'不正解、もっとクリスタルを集めよう', submit:'答える', ok:'わかった', win:'宝物が見つかった！', collected:'集めた', outOf:'/', playAgain:'もう一度遊ぶ' },
-  ko: { name:'한국어 🇰🇷', correct:'정답!', wrong:'틀렸어요, 크리스탈을 더 모아봐요', submit:'답하기', ok:'알겠어요', win:'보물을 찾았어요!', collected:'수집함', outOf:'/', playAgain:'다시 하기' },
-  ar: { name:'العربية 🇸🇦', correct:'صحيح!', wrong:'خطأ، دعنا نجمع المزيد من الكريستال', submit:'إجابة', ok:'فهمت', win:'تم إيجاد الكنز!', collected:'تم جمع', outOf:'من', playAgain:'العب مرة أخرى' },
-  tr: { name:'Türkçe 🇹🇷', correct:'Doğru!', wrong:'Yanlış, daha fazla kristal toplayalım', submit:'Cevapla', ok:'Anladım', win:'Hazine bulundu!', collected:'Toplandı', outOf:'/', playAgain:'Tekrar oyna' },
-  uk: { name:'Українська 🇺🇦', correct:'Правильно!', wrong:'Неправильно, збираємо більше кристалів', submit:'Відповісти', ok:'Зрозуміло', win:'Скарб знайдено!', collected:'Зібрано', outOf:'з', playAgain:'Грати знову' }
+  ru: { name:'Русский 🇷🇺', correct:'Верно!', wrong:'Неверно, попробуем собрать ещё кристаллов', submit:'Ответить', ok:'Понятно', win:'Сокровища найдены!', collected:'Собрано', outOf:'из', playAgain:'Играть заново' , textPlaceholder:'Введите ответ'},
+  en: { name:'English 🇬🇧', correct:'Correct!', wrong:'Wrong, let\'s collect more crystals', submit:'Answer', ok:'Got it', win:'Treasure found!', collected:'Collected', outOf:'of', playAgain:'Play again' , textPlaceholder:'Enter your answer'},
+  fr: { name:'Français 🇫🇷', correct:'Correct !', wrong:'Incorrect, collectons plus de cristaux', submit:'Répondre', ok:'Compris', win:'Trésor trouvé !', collected:'Collecté', outOf:'sur', playAgain:'Rejouer' , textPlaceholder:'Entrez votre réponse'},
+  es: { name:'Español 🇪🇸', correct:'¡Correcto!', wrong:'Incorrecto, juntemos más cristales', submit:'Responder', ok:'Entendido', win:'¡Tesoro encontrado!', collected:'Recopilado', outOf:'de', playAgain:'Jugar de nuevo' , textPlaceholder:'Escribe tu respuesta'},
+  it: { name:'Italiano 🇮🇹', correct:'Corretto!', wrong:'Sbagliato, raccogliamo altri cristalli', submit:'Rispondere', ok:'Capito', win:'Tesoro trovato!', collected:'Raccolto', outOf:'di', playAgain:'Gioca ancora' , textPlaceholder:'Inserisci la risposta'},
+  de: { name:'Deutsch 🇩🇪', correct:'Richtig!', wrong:'Falsch, lass uns mehr Kristalle sammeln', submit:'Antworten', ok:'Verstanden', win:'Schatz gefunden!', collected:'Gesammelt', outOf:'von', playAgain:'Nochmal spielen' , textPlaceholder:'Gib deine Antwort ein'},
+  pt: { name:'Português 🇵🇹', correct:'Correto!', wrong:'Errado, vamos colecionar mais cristais', submit:'Responder', ok:'Entendido', win:'Tesouro encontrado!', collected:'Coletado', outOf:'de', playAgain:'Jogar novamente' , textPlaceholder:'Digite sua resposta'},
+  pl: { name:'Polski 🇵🇱', correct:'Poprawnie!', wrong:'Błędnie, zbieramy więcej kryształów', submit:'Odpowiedź', ok:'Rozumiem', win:'Skarb znaleziony!', collected:'Zebrano', outOf:'z', playAgain:'Zagraj ponownie' , textPlaceholder:'Wpisz odpowiedź'},
+  zh: { name:'中文 🇨🇳', correct:'正确！', wrong:'错误，让我们再收集更多水晶', submit:'回答', ok:'明白了', win:'找到宝藏！', collected:'已收集', outOf:'/', playAgain:'再玩一次' , textPlaceholder:'输入答案'},
+  ja: { name:'日本語 🇯🇵', correct:'正解！', wrong:'不正解、もっとクリスタルを集めよう', submit:'答える', ok:'わかった', win:'宝物が見つかった！', collected:'集めた', outOf:'/', playAgain:'もう一度遊ぶ' , textPlaceholder:'答えを入力'},
+  ko: { name:'한국어 🇰🇷', correct:'정답!', wrong:'틀렸어요, 크리스탈을 더 모아봐요', submit:'답하기', ok:'알겠어요', win:'보물을 찾았어요!', collected:'수집함', outOf:'/', playAgain:'다시 하기' , textPlaceholder:'답을 입력하세요'},
+  ar: { name:'العربية 🇸🇦', correct:'صحيح!', wrong:'خطأ، دعنا نجمع المزيد من الكريستال', submit:'إجابة', ok:'فهمت', win:'تم إيجاد الكنز!', collected:'تم جمع', outOf:'من', playAgain:'العب مرة أخرى' , textPlaceholder:'أدخل إجابتك'},
+  tr: { name:'Türkçe 🇹🇷', correct:'Doğru!', wrong:'Yanlış, daha fazla kristal toplayalım', submit:'Cevapla', ok:'Anladım', win:'Hazine bulundu!', collected:'Toplandı', outOf:'/', playAgain:'Tekrar oyna' , textPlaceholder:'Cevabınızı girin'},
+  uk: { name:'Українська 🇺🇦', correct:'Правильно!', wrong:'Неправильно, збираємо більше кристалів', submit:'Відповісти', ok:'Зрозуміло', win:'Скарб знайдено!', collected:'Зібрано', outOf:'з', playAgain:'Грати знову' , textPlaceholder:'Введіть відповідь'}
 };
 const state = {
   background:{ type:'template', templateId:'desert', src:'' },
@@ -1288,9 +1288,9 @@ const GAME_ENGINE_JS = `
         var o=q.options[i];
         html += '<div class="g-opt" data-i="'+i+'" data-type="'+q.type+'" style="font-size:'+(mc.fontSize||16)+'px;">' + (o.image?'<img src="'+o.image+'">':'') + '<span>'+escapeHtml(o.text)+'</span></div>';
       }
-      html += '</div><button class="g-submit" id="gSubmit">Ответить</button>';
+      html += '</div><button class="g-submit" id="gSubmit">'+CONFIG.i18n.submit+'</button>';
      } else if(q.type==='text'){
-      html += '<input type="text" class="g-text-input" id="gTextInput" placeholder="Введите ответ">';
+      html += '<input type="text" class="g-text-input" id="gTextInput" placeholder="'+CONFIG.i18n.textPlaceholder+'">';
       html += '<button class="g-submit" id="gSubmit">'+CONFIG.i18n.submit+'</button>';
     } else if(q.type==='order'){
       var shuffled = q.items.slice();
@@ -1300,7 +1300,7 @@ const GAME_ENGINE_JS = `
         var it = shuffled[oi];
         html += '<div class="g-order-row" data-id="'+it.id+'"><span class="drag-handle">&#10247;&#10247;</span>' + (it.image?'<img src="'+it.image+'">':'') + '<span>'+escapeHtml(it.text)+'</span></div>';
       }
-      html += '</div><button class="g-submit" id="gSubmit">Ответить</button>';
+      html += '</div><button class="g-submit" id="gSubmit">'+CONFIG.i18n.submit+'</button>';
     } else if(q.type==='info'){
       html += '<button class="g-submit" id="gSubmit">'+CONFIG.i18n.ok+'</button>';
     }
@@ -1501,10 +1501,9 @@ const GAME_ENGINE_JS = `
 
 function buildStandaloneHTML(config){
   const cfg = JSON.parse(JSON.stringify(config));
-  let json = JSON.stringify(cfg).replace(/<\/script/gi, '<\\/script');
-    // Передаём текущий объект переводов в конфиг
+  // Передаём текущий объект переводов в конфиг
   cfg.i18n = LANGUAGES[cfg.lang] || LANGUAGES.ru;
-  json = JSON.stringify(cfg).replace(/<\/script/gi, '<\\/script');
+  let json = JSON.stringify(cfg).replace(/<\/script/gi, '<\\/script');
   const fontDef = FONT_OPTIONS.find(f=>f.id===(config.modal&&config.modal.font));
   const fontLink = (fontDef && fontDef.google) ?
     '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'+
