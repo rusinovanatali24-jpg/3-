@@ -440,8 +440,16 @@ const FONT_OPTIONS = [
   {id:'system', name:'Обычный', family:'-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif', google:null},
   {id:'comfortaa', name:'Детский — Comfortaa', family:'\'Comfortaa\',cursive', google:'Comfortaa:wght@400;700'},
   {id:'nunito', name:'Дружелюбный — Nunito', family:'\'Nunito\',sans-serif', google:'Nunito:wght@400;800'},
+  {id:'shantell', name:'Дружелюбный — Shantell Sans', family:'\'Shantell Sans\',cursive', google:'Shantell+Sans:ital,wght@0,400;0,700;1,400'},
+  {id:'neucha', name:'Рукописный — Neucha', family:'\'Neucha\',cursive', google:'Neucha'},
   {id:'playfair', name:'Изящный — Playfair Display', family:'\'Playfair Display\',serif', google:'Playfair+Display:wght@400;700'},
+  {id:'yeseva', name:'Изящный — Yeseva One', family:'\'Yeseva One\',cursive', google:'Yeseva+One'},
+  {id:'literata', name:'Изящный — Literata', family:'\'Literata\',serif', google:'Literata:ital,wght@0,400;0,700;1,400'},
+  {id:'poiret', name:'Изящный/графичный — Poiret One', family:'\'Poiret One\',cursive', google:'Poiret+One'},
   {id:'cormorant', name:'Изящный — Cormorant', family:'\'Cormorant Garamond\',serif', google:'Cormorant+Garamond:wght@500;700'},
+  {id:'rubik', name:'Чёткий — Rubik', family:'\'Rubik\',sans-serif', google:'Rubik:wght@400;700'},
+  {id:'jura', name:'Графичный — Jura', family:'\'Jura\',sans-serif', google:'Jura:wght@400;700'},
+  {id:'lobster', name:'Графичный — Lobster', family:'\'Lobster\',cursive', google:'Lobster'},
   {id:'badscript', name:'Комикс/рукописный — Bad Script', family:'\'Bad Script\',cursive', google:'Bad+Script'},
   {id:'rampart', name:'Граффити/комикс — Rampart One', family:'\'Rampart One\',cursive', google:'Rampart+One'}
 ];
@@ -1281,7 +1289,12 @@ const GAME_ENGINE_JS = `
     var fontFamilies = {
       system:'-apple-system,BlinkMacSystemFont,\\'Segoe UI\\',Roboto,sans-serif',
       comfortaa:'\\'Comfortaa\\',cursive', nunito:'\\'Nunito\\',sans-serif',
-      playfair:'\\'Playfair Display\\',serif', cormorant:'\\'Cormorant Garamond\\',serif',
+      shantell:'\\'Shantell Sans\\',cursive', neucha:'\\'Neucha\\',cursive',
+      playfair:'\\'Playfair Display\\',serif', yeseva:'\\'Yeseva One\\',cursive',
+      literata:'\\'Literata\\',serif', poiret:'\\'Poiret One\\',cursive',
+      cormorant:'\\'Cormorant Garamond\\',serif',
+      rubik:'\\'Rubik\\',sans-serif', jura:'\\'Jura\\',sans-serif',
+      lobster:'\\'Lobster\\',cursive',
       badscript:'\\'Bad Script\\',cursive', rampart:'\\'Rampart One\\',cursive'
     };
     var fontFam = fontFamilies[mc.font] || fontFamilies.system;
