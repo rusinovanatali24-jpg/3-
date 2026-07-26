@@ -152,6 +152,9 @@
     .app{flex-direction:column;}
     .side{width:100%;flex-direction:row;overflow-x:auto;}
   }
+  .preview-resizer{position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:se-resize;z-index:5;background:linear-gradient(135deg,var(--gold),var(--amber));border-radius:4px 0 16px 0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#20140A;user-select:none;touch-action:none;box-shadow:0 2px 6px rgba(0,0,0,.4);}
+  .preview-resizer:active{cursor:grabbing;}
+  #modalPreviewBox{position:relative;}
 </style>
 <base target="_blank">
 <base target="_blank">
@@ -616,14 +619,16 @@ function modalPreviewHTML(){
     boxStyle += 'background:#211732;border:1px solid #3a2e52;box-shadow:0 14px 30px rgba(0,0,0,.4);';
   }
   const bgLayer = m.bgImage ? '<div style="position:absolute;inset:0;background-image:url(\''+m.bgImage+'\');background-size:cover;background-position:center;opacity:.35;"></div>' : '';
-  return '<div style="'+boxStyle+'">'+bgLayer+
+  var html = '<div style="'+boxStyle+'">'+bgLayer+
     '<h3 style="'+headStyle+'">Сколько будет 2 + 2?</h3>'+
     '<div style="position:relative;display:flex;flex-direction:column;gap:8px;">'+
       '<div style="background:rgba(21,15,35,.7);border:1px solid #3a2e52;border-radius:10px;padding:9px 12px;font-size:'+(m.fontSize-2)+'px;">3</div>'+
       '<div style="background:rgba(21,15,35,.7);border:1px solid '+m.color+';border-radius:10px;padding:9px 12px;font-size:'+(m.fontSize-2)+'px;">4</div>'+
       '<button style="width:100%;margin-top:4px;padding:10px;border-radius:10px;border:none;background:linear-gradient(135deg,'+m.color+','+shade(m.color,-25)+');color:#20140A;font-weight:700;font-size:'+(m.fontSize-2)+'px;">Ответить</button>'+
     '</div>'+
+    '<div class="preview-resizer" id="previewResizer" title="Потяните, чтобы изменить ширину окна">⤡</div>'+
   '</div>';
+  return html;
 }
 
 
@@ -1924,6 +1929,34 @@ document.getElementById('loadFileInput').addEventListener('change', function(){
   reader.readAsText(file);
   this.value = '';
 });
+
+/* -------- ресайз превью модального окна в редакторе -------- */
+var previewResizeState = null;
+document.addEventListener('pointerdown', function(e){
+  var handle = e.target.closest('#previewResizer');
+  if(!handle) return;
+  e.preventDefault();
+  var box = document.getElementById('modalPreviewBox');
+  var startX = e.clientX;
+  var startW = box.getBoundingClientRect().width;
+  var minW = 280, maxW = Math.min(800, box.parentElement.getBoundingClientRect().width - 40);
+  previewResizeState = {startX:startX, startW:startW, minW:minW, maxW:maxW};
+});
+document.addEventListener('pointermove', function(e){
+  if(!previewResizeState) return;
+  var newW = Math.round(Math.max(previewResizeState.minW, Math.min(previewResizeState.maxW, previewResizeState.startW + (e.clientX - previewResizeState.startX))));
+  state.modal.maxWidth = newW;
+  var label = document.getElementById('modalMaxWidthLabel');
+  if(label) label.textContent = newW+'px';
+  var slider = document.querySelector('[data-action="set-modal-maxwidth"]');
+  if(slider) slider.value = newW;
+  var box = document.getElementById('modalPreviewBox');
+  if(box){
+    var inner = box.firstElementChild;
+    if(inner){ inner.style.maxWidth = newW+'px'; inner.style.width = newW+'px'; }
+  }
+});
+document.addEventListener('pointerup', function(){ previewResizeState = null; });
 
 tryRestoreOnLoad();
 render();
