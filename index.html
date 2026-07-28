@@ -488,7 +488,9 @@ const state = {
   author:'Ситникова Наталья | Мастерская репетитора',
   hostedUrl:'',
   lang: 'ru',
-modal:{ style:'default', color:'#E8B75B', font:'system', fontSize:16, bgImage:null, maxWidth:420 }
+winMessage: 'Сокровища найдены! Ты справился!',
+winImage: null,
+  modal:{ style:'default', color:'#E8B75B', font:'system', fontSize:16, bgImage:null, maxWidth:420 }
 };
 let activeTab='bg';
 
@@ -508,6 +510,8 @@ function serializeStateForSave(){
     questions: state.questions,
     modal: state.modal,
     lang: state.lang,
+    winMessage: state.winMessage,
+winImage: state.winImage,
     grid: state.grid,
     cellSize: state.grid.cellSize,
     author: state.author,
@@ -675,6 +679,16 @@ function renderRulesPanel(){
     return '<option value="'+k+'" '+(k===state.lang?'selected':'')+'>'+LANGUAGES[k].name+'</option>';
   }).join('');
   return ''+
+'<div class="card"><h3>Финальный экран (победа)</h3>'+
+'<label class="f">Текст финального сообщения</label>'+
+'<textarea data-action="set-win-msg" style="width:100%;margin-top:6px;">'+escHtml(state.winMessage||'')+'</textarea>'+
+'<div class="hint" style="margin-bottom:12px;">Появляется когда ребёнок собрал все кристаллы и ответил на все вопросы.</div>'+
+'<label class="f">Картинка победы (необязательно)</label>'+
+'<div class="row" style="gap:10px;align-items:center;margin-top:6px;">'+
+  (state.winImage?('<img src="'+state.winImage+'" style="max-height:80px;max-width:160px;border-radius:8px;object-fit:cover;">'):'')+
+  '<button class="small" data-action="win-image-upload">'+( state.winImage?'Заменить':'Добавить картинку')+'</button>'+
+  (state.winImage?'<button class="small ghost" data-action="win-image-reset">Удалить</button>':'')+
+'</div></div>'+
   '<div class="panel-head"><h2>Правила игры</h2><p>Настройте размер поля, целевой кристалл и штраф за неверный ответ.</p></div>'+
   '<div class="card"><h3>Язык интерфейса игры</h3>'+
   '<label class="f">Все тексты кнопок, подсказок и сообщений в игре</label>'+
@@ -1470,10 +1484,12 @@ const GAME_ENGINE_JS = `
     if(alive) requestAnimationFrame(tickFx); else particles._raf=false;
   }
 
-  function showWin(){
+function showWin(){
     var win = document.createElement('div');
     win.className='g-win';
-    win.innerHTML = '<h2>'+CONFIG.i18n.win+'</h2><p>'+CONFIG.i18n.collected+' '+progress+' '+CONFIG.i18n.outOf+' '+target+'.</p><button id="gAgain">'+CONFIG.i18n.playAgain+'</button>';
+    var imgHtml = CONFIG.winImage ? '<img src="'+CONFIG.winImage+'" style="max-width:280px;max-height:200px;border-radius:12px;object-fit:contain;margin-bottom:16px;">' : '';
+    var msg = CONFIG.winMessage || CONFIG.i18n.win;
+    win.innerHTML = imgHtml+'<h2>'+msg+'</h2><p>'+CONFIG.i18n.collected+' '+progress+' '+CONFIG.i18n.outOf+' '+target+'.</p><button id="gAgain">'+CONFIG.i18n.playAgain+'</button>';
     document.body.appendChild(win);
     launchFx('fireworks', fx.width/2, fx.height/2);
     launchFx('confetti', fx.width/2, 20);
@@ -1565,7 +1581,9 @@ document.getElementById('panelRoot').addEventListener('click', function(e){
   else if(act==='pick-bg-custom'){ pickImage(function(res){ state.background={type:'custom',templateId:state.background.templateId,src:res}; render(); }, {maxDim:900,quality:0.7}); }
   else if(act==='set-modal-style'){ state.modal.style=b.dataset.style; render(); }
   else if(act==='modal-bg-upload'){ pickImage(function(res){ state.modal.bgImage=res; render(); }, {maxDim:700,quality:0.7}); }
-  else if(act==='modal-bg-reset'){ state.modal.bgImage=null; render(); }
+    else if(act==='modal-bg-reset'){ state.modal.bgImage=null; render(); }
+  else if(act==='win-image-upload'){ pickImage(function(res){ state.winImage=res; render(); },{maxDim:800,quality:0.75}); }
+  else if(act==='win-image-reset'){ state.winImage=null; render(); }
 
   else if(act==='gem-upload'){ const i=parseInt(b.dataset.i,10); pickImage(function(res){ state.gems[i].src=res; render(); }, {maxDim:220,quality:0.75}); }
   else if(act==='gem-reset'){ const i=parseInt(b.dataset.i,10); state.gems[i].src=null; render(); }
@@ -1664,9 +1682,8 @@ document.getElementById('panelRoot').addEventListener('input', function(e){
     const preview = document.getElementById('modalPreviewBox');
     if(preview) preview.innerHTML = modalPreviewHTML();
   }
-  else if(act==='set-target-msg'){
-    state.targetReachedMessage = el.value;
-  }
+  else if(act==='set-target-msg'){ state.targetReachedMessage = el.value; }
+  else if(act==='set-win-msg'){ state.winMessage = el.value; }
   else if(act==='set-gem-size'){
     state.grid.cellSize = parseInt(el.value,10);
     const label = document.getElementById('gemSizeLabel');
