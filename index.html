@@ -1881,7 +1881,11 @@ function renderLatexCards(){
   scroll.innerHTML = html;
   scroll.querySelectorAll('.latex-card').forEach(function(card){
     card.addEventListener('click', function(){
-      insertAtCursor(lastLatexField, '$'+card.dataset.latexCode+'$');
+      latexComposeInput.value = card.dataset.latexCode;
+      latexInsertBtn.disabled = false;
+      latexComposePreview.innerHTML = '$'+escHtml(card.dataset.latexCode)+'$';
+      typesetMath(latexComposePreview);
+      latexComposeInput.focus();
     });
   });
   typesetMath(scroll);
