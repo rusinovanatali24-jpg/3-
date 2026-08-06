@@ -490,7 +490,7 @@ const state = {
   lang: 'ru',
 winMessage: 'Сокровища найдены! Ты справился!',
 winImage: null,
-  modal:{ style:'default', color:'#E8B75B', font:'system', fontSize:16, bgImage:null, maxWidth:420 }
+  modal:{ style:'default', color:'#E8B75B', textColor:'#F3EEE3', font:'system', fontSize:16, bgImage:null, maxWidth:420 }
 };
 let activeTab='bg';
 
@@ -600,7 +600,7 @@ function renderBgPanel(){
   '<div class="card"><h3>Всплывающее окно вопроса</h3>'+
   '<label class="f">Стиль оформления</label><div class="row" style="gap:8px;margin:6px 0 16px;">'+styleButtons+'</div>'+
   '<div class="row" style="gap:16px;align-items:flex-end;margin-bottom:16px;">'+
-    '<div class="col"><label class="f">Акцентный цвет</label><input type="color" data-action="set-modal-color" value="'+escAttr(m.color)+'" style="width:56px;height:36px;padding:2px;"></div>'+
+'<div class="col"><label class="f">Цвет текста вопроса</label><input type="color" data-action="set-modal-textcolor" value="'+escAttr(m.textColor||'#F3EEE3')+'" style="width:56px;height:36px;padding:2px;"></div>'+
     '<div class="col" style="flex:1;min-width:180px;"><label class="f">Шрифт</label><select data-action="set-modal-font">'+fontOptions+'</select></div>'+
   '</div>'+
   '<div class="col" style="margin-bottom:16px;"><label class="f">Размер шрифта вопроса: <b id="modalFontSizeLabel">'+m.fontSize+'px</b></label>'+
@@ -622,7 +622,7 @@ function modalPreviewHTML(){
   const m = state.modal;
   const font = (FONT_OPTIONS.find(f=>f.id===m.font)||FONT_OPTIONS[0]).family;
   let boxStyle = 'width:100%;max-width:'+(m.maxWidth||420)+'px;border-radius:16px;padding:18px;color:#F3EEE3;font-family:'+font+';position:relative;overflow:hidden;';
-  let headStyle = 'margin:0 0 10px;font-size:'+m.fontSize+'px;line-height:1.4;position:relative;font-family:'+font+';font-weight:400;';
+let headStyle = 'margin:0 0 10px;font-size:'+m.fontSize+'px;line-height:1.4;position:relative;font-family:'+font+';font-weight:400;color:'+(m.textColor||'#F3EEE3')+';';
   if(m.style==='3d'){
     boxStyle += 'background:linear-gradient(160deg,#2b2040,#1a1228);border:3px solid '+m.color+';box-shadow:0 8px 0 '+shade(m.color,-40)+',0 16px 26px rgba(0,0,0,.55);';
   } else if(m.style==='neon'){
@@ -1313,7 +1313,7 @@ const GAME_ENGINE_JS = `
     };
     var fontFam = fontFamilies[mc.font] || fontFamilies.system;
     var boxStyle = 'font-family:'+fontFam+';position:relative;overflow:hidden;--modal-accent:'+mc.color+';--modal-accent-dark:'+shade(mc.color,-25)+';--modal-max-width:'+(mc.maxWidth||420)+'px;';
-    var headStyle = 'font-size:'+(mc.fontSize||16)+'px;position:relative;font-family:'+fontFam+';';
+    var headStyle = 'font-size:'+(mc.fontSize||16)+'px;position:relative;font-family:'+fontFam+';color:'+(mc.textColor||'#F3EEE3')+';';
     if(mc.style==='3d'){
       boxStyle += 'background:linear-gradient(160deg,#2b2040,#1a1228);border:3px solid '+mc.color+';box-shadow:0 8px 0 '+shade(mc.color,-40)+',0 16px 26px rgba(0,0,0,.55);';
     } else if(mc.style==='neon'){
@@ -1642,6 +1642,7 @@ document.getElementById('panelRoot').addEventListener('change', function(e){
   else if(act==='set-feedback'){ state.feedback=el.value; render(); }
   else if(act==='set-lang'){ state.lang=el.value; render(); }
   else if(act==='set-modal-color'){ state.modal.color=el.value; render(); }
+  else if(act==='set-modal-textcolor'){ state.modal.textColor=el.value; render(); }
   else if(act==='set-modal-font'){ state.modal.font=el.value; render(); }
   else if(act==='gem-toggle'){
     const i=parseInt(el.dataset.i,10);
